@@ -33,7 +33,7 @@ class Sensei(MockableTestResult):
                 self.stream.writeln()
                 self.stream.writeln("{0}{1}Thinking {2}".format(
                     Fore.RESET, Style.NORMAL, helper.cls_name(test)))
-                if helper.cls_name(test) != 'AboutAsserts':
+                if helper.cls_name(test) not in ['AboutAsserts', 'AboutExtraCredit']:
                     self.lesson_pass_count += 1
 
     def addSuccess(self, test):
@@ -167,14 +167,16 @@ class Sensei(MockableTestResult):
         return stack_text
 
     def report_progress(self):
-        return "You have completed {0} koans and " \
-            "{1} lessons.".format(
+        return "You have completed {0} ({2} %) koans and " \
+                "{1} (out of {3}) lessons.".format(
                 self.pass_count,
-                self.lesson_pass_count)
+                self.lesson_pass_count,
+                self.pass_count*100//self.total_koans(),
+                self.total_lessons())
 
     def report_remaining(self):
         koans_remaining = self.total_koans() - self.pass_count
-        lessons_remaining = self.total_lessons() - self.pass_count
+        lessons_remaining = self.total_lessons() - self.lesson_pass_count
 
         return "You are now {0} koans and {1} lessons away from " \
             "reaching enlightenment.".format(
